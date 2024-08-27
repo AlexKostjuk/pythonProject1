@@ -7,6 +7,7 @@ import tkinter as tk
 
 
 
+
 # Настройка подключения к базе данных PostgreSQL
 DB_HOST = 'localhost'  # Или IP адрес контейнера Docker
 DB_PORT = '5432'  # Порт PostgreSQL
