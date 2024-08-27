@@ -3,24 +3,24 @@ import hashlib
 import wmi
 import subprocess
 import socket
+import tkinter as tk
 
 
 
 # Настройка подключения к базе данных PostgreSQL
 DB_HOST = 'localhost'  # Или IP адрес контейнера Docker
 DB_PORT = '5432'  # Порт PostgreSQL
-DB_NAME = 'your_db_name'
-DB_USER = 'your_db_user'
-DB_PASSWORD = 'your_db_password'
+DB_NAME = 'postgres'
+DB_USER = 'Admin1'
+DB_PASSWORD = 'Power1983'
 
 
 def hardware_monitor():
 
     # Путь к вашему .exe файлу
-    path_to_exe = "C:\\Users\\Alex\\PycharmProjects\\Diagnostick\\djangoProjectDiagnostick\\OpenHardwareMonitor\\OpenHardwareMonitor.exe"
+    path_to_exe = "C:\\Users\\alkos\\Downloads\\openhardwaremonitor-v0.9.6\\OpenHardwareMonitor\\OpenHardwareMonitor.exe"
     # Запуск .exe файла с правами администратора
     subprocess.run(["powershell", "-Command", f"Start-Process '{path_to_exe}' -Verb RunAs"])
-
 
 def get_all_sensors():
     try:
@@ -45,6 +45,17 @@ def get_computer_name():
     except Exception as e:
         print(f"Ошибка при получении имени компьютера: {e}")
         return "Unknown"
+def sensor_psname():
+    all_sensors = get_all_sensors()
+    computer_name = get_computer_name()
+
+    data = {
+        "ComputerName": computer_name,
+        "Sensors": all_sensors
+    }
+    print(data)
+    return data
+
 
 # Функция для хэширования пароля (опционально)
 def hash_password(password):
@@ -118,10 +129,10 @@ def send_result_to_db(user_id, result):
         print(f"Error connecting to the database: {e}")
 
 
-def main():
+def main(username, password):
     # Пример запроса логина и пароля у пользователя
-    username = input("Enter username: ")
-    password = input("Enter password: ")
+    # username = input("Enter username: ")
+    # password = input("Enter password: ")
 
     user = authenticate(username, password)
 
@@ -140,5 +151,36 @@ def main():
         print("Login failed! Invalid username or password.")
 
 
+
+
+def call_function():
+    arg1 = entry1.get()
+    arg2 = entry2.get()
+    main(arg1, arg2)
+
+def create_gui():
+    global entry1, entry2
+    root = tk.Tk()
+    root.title("Пример GUI")
+
+    call_button = tk.Button(root, text="Вызвать sensor_psname", command=sensor_psname)
+
+    call_button.pack(pady=20)
+    tk.Label(root, text="Аргумент 1:").pack(pady=5)
+    entry1 = tk.Entry(root)
+    entry1.pack(pady=5)
+
+    tk.Label(root, text="Аргумент 2:").pack(pady=5)
+    entry2 = tk.Entry(root)
+    entry2.pack(pady=5)
+
+    call_button = tk.Button(root, text="Вызвать функцию", command=call_function)
+    call_button.pack(pady=20)
+
+    root.mainloop()
+
+
+
+p = create_gui()
 if __name__ == "__main__":
     main()

@@ -33,4 +33,4 @@ data = {
     "Sensors": all_sensors
 }
 
-print(data)
+print(all_sensors)
